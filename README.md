@@ -30,14 +30,14 @@ A grimoire is a book of knowledge and formulas - much like a collection of Facto
 
 ## Project Status
 
-**Current Phase:** Phase 1 - Local Application Development
+**Current Phase:** Phase 2 - Containerization
 
 See [PROJECT_OUTLINE.md](PROJECT_OUTLINE.md) for the complete development roadmap.
 
 ### Development Phases
 
 - [x] **Phase 0:** Repository Setup ✅
-- [ ] **Phase 1:** Local Application Development (Starting next)
+- [x] **Phase 1:** Local Application Development ✅
 - [ ] **Phase 2:** Containerization with Docker
 - [ ] **Phase 3:** Local Kubernetes
 - [ ] **Phase 4:** AWS Infrastructure
@@ -48,7 +48,24 @@ See [PROJECT_OUTLINE.md](PROJECT_OUTLINE.md) for the complete development roadma
 
 ## Quick Start
 
-*Coming in Phase 1 - Local development setup instructions will be added once the application is built.*
+```bash
+# Clone the repository
+git clone https://github.com/chayde/grimoire.git
+cd grimoire
+
+# Create virtual environment and install dependencies
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements-dev.txt
+
+# Run the application
+uvicorn app.main:app --reload
+
+# Open in browser
+# http://localhost:8000
+```
+
+The application uses SQLite by default for local development. See `.env` file to configure database settings.
 
 ## Documentation
 

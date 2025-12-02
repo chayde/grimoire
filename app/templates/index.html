@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Grimoire{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>📚 Welcome to Grimoire</h1>
+    <p>Your Factorio Blueprint Collection</p>
+    <a href="/upload" class="btn btn-primary">Upload Blueprint</a>
+</div>
+
+<section class="blueprints-section">
+    <h2>Recent Blueprints</h2>
+
+    {% if blueprints %}
+    <div class="blueprints-grid">
+        {% for blueprint in blueprints %}
+        <div class="blueprint-card">
+            <h3><a href="/blueprints/{{ blueprint.id }}">{{ blueprint.name }}</a></h3>
+            {% if blueprint.description %}
+            <p class="description">{{ blueprint.description[:100] }}{% if blueprint.description|length > 100 %}...{% endif %}</p>
+            {% endif %}
+            <div class="blueprint-meta">
+                <span>📐 {{ blueprint.width }}x{{ blueprint.height }}</span>
+                <span>🔧 {{ blueprint.entity_count }} entities</span>
+            </div>
+            {% if blueprint.tags %}
+            <div class="tags">
+                {% for tag in blueprint.tags %}
+                <span class="tag">{{ tag.name }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <small>Created {{ blueprint.created_at.strftime('%Y-%m-%d') }}</small>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No blueprints yet. <a href="/upload">Upload your first blueprint!</a></p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

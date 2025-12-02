@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Blueprint - Grimoire{% endblock %}
+
+{% block content %}
+<div class="upload-page">
+    <h1>Upload Blueprint</h1>
+    <p>Paste your Factorio blueprint string below</p>
+
+    <form id="upload-form">
+        <div class="form-group">
+            <label for="blueprint_string">Blueprint String:</label>
+            <textarea
+                id="blueprint_string"
+                name="blueprint_string"
+                rows="6"
+                placeholder="0eNqrVkrKKU0tKMrMK..."
+                required
+            ></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="tags">Tags (comma-separated, optional):</label>
+            <input
+                type="text"
+                id="tags"
+                name="tags"
+                placeholder="production, green-circuits, early-game"
+            >
+        </div>
+
+        <button type="submit" class="btn btn-primary">Upload Blueprint</button>
+    </form>
+
+    <div id="result" class="result hidden"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('upload-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const blueprintString = document.getElementById('blueprint_string').value.trim();
+    const tagsInput = document.getElementById('tags').value.trim();
+    const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(t => t) : null;
+
+    const resultDiv = document.getElementById('result');
+    resultDiv.className = 'result hidden';
+
+    try {
+        const response = await fetch('/api/blueprints/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                blueprint_string: blueprintString,
+                tags: tags
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            resultDiv.className = 'result success';
+            resultDiv.innerHTML = `
+                <h3>✅ Blueprint uploaded successfully!</h3>
+                <p><strong>Name:</strong> ${data.name}</p>
+                <p><strong>Entities:</strong> ${data.entity_count}</p>
+                <p><strong>Dimensions:</strong> ${data.width}x${data.height}</p>
+                <a href="/blueprints/${data.id}" class="btn">View Blueprint</a>
+            `;
+            document.getElementById('upload-form').reset();
+        } else {
+            throw new Error(data.detail || 'Upload failed');
+        }
+    } catch (error) {
+        resultDiv.className = 'result error';
+        resultDiv.innerHTML = `<p>❌ Error: ${error.message}</p>`;
+    }
+});
+</script>
+{% endblock %}
